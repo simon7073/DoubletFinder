@@ -13,7 +13,11 @@ doubletFinder <- function(seu, PCs, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct
   if (reuse.pANN == FALSE) {
     ## Make merged real-artifical data
     real.cells <- rownames(seu@meta.data)
-    data <- ifelse(packageVersion("Seurat") >= 5, seu@assays$RNA$counts[, real.cells], seu@assays$RNA@counts[, real.cells])
+    if (packageVersion("Seurat") >= "5") {
+        data <- seu@assays$RNA$counts[, real.cells]
+    } else {
+        data <- seu@assays$RNA@counts[, real.cells]
+    }
     n_real.cells <- length(real.cells)
     n_doublets <- round(n_real.cells/(1 - pN) - n_real.cells)
     print(paste("Creating",n_doublets,"artificial doublets...",sep=" "))
